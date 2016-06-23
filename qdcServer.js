@@ -43,16 +43,17 @@ var apiRoutes = express.Router();
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
 
-
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true,
     limit: '50mb'
 }));
 
-apiRoutes.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-    extended: true,
-    limit: '50mb'
-}));
+// apiRoutes.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+//     extended: true,
+//     limit: '50mb'
+// }));
+
+apiRoutes.use(bodyParser.json());
 
 //set secret Variable
 app.set('superSecret', config.secret);
@@ -72,12 +73,9 @@ var Unita = require('./model/unita');
 //istantiate middleware defined in other file
 var middleware = require('./middleware/middleware')
 
-//set middleware for verify token remind to load before route
-apiRoutes.use(middleware.verifyToken)
+//set middleware for verify token remind to load before route uncomment to use token authentication
+// apiRoutes.use(middleware.verifyToken)
 
-//instantiate route defined in other file
-require('./route/routeColtura')(apiRoutes,app);
-require('./route/routeUser')(apiRoutes,app);
 
 //instantiate template engine
 // app.set('view engine', 'ejs');
@@ -93,7 +91,8 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
 
     // Request headers you wish to allow
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
@@ -116,6 +115,13 @@ app.use(function (req, res, next) {
 app.listen(8082, function () {
     console.log('listening on port 8082!');
 });
+
+
+//instantiate route defined in other file
+require('./route/routeColtura')(apiRoutes,app);
+require('./route/routeUser')(apiRoutes,app);
+require('./route/routeLavori')(apiRoutes,app);
+
 
 app.post('/login',function (req, res) {
 
