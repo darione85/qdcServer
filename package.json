@@ -1,0 +1,28 @@
+{
+  "name": "nodejs",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "~1.15.0",
+    "cron": "~1.1.0",
+    "ejs": "~2.4.1",
+    "express": "~4.13.4",
+    "fs": "~0.0.2",
+    "httpdispatcher": "~0.4.0",
+    "jsonfile": "~2.2.3",
+    "jsonwebtoken": "^7.0.1",
+    "mongodb": "~2.1.16",
+    "mongoose": "^4.5.1",
+    "phantom": "~0.7.2",
+    "swig": "~1.4.2",
+    "underscore": "~1.8.3",
+    "uuid": "~2.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD-2-Clause"
+}
