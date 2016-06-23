@@ -41,6 +41,3 @@ bower_components
 
 #webstorm
 .idea
-
-#secret
-config.js
