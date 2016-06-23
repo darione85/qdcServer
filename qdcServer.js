@@ -61,13 +61,13 @@ app.set('superSecret', config.secret);
 //MODEL
 //istantiate all model
 var User = require('./model/user');
-var Coltura = require('./model/colture');
-var Lavoro = require('./model/lavori');
-var Prodotto = require('./model/prodotti');
-var Terreno = require('./model/terreni');
-var Trattamento = require('./model/trattamenti');
-var TrattamentoProdotto = require('./model/trattamentoProdotti');
-var Unita = require('./model/unita');
+// var Coltura = require('./model/colture');
+// var Lavoro = require('./model/lavori');
+// var Prodotto = require('./model/prodotti');
+// var Terreno = require('./model/terreni');
+// var Trattamento = require('./model/trattamenti');
+// var TrattamentoProdotto = require('./model/trattamentoProdotti');
+// var Unita = require('./model/unita');
 
 
 //istantiate middleware defined in other file
@@ -75,6 +75,9 @@ var middleware = require('./middleware/middleware')
 
 //set middleware for verify token remind to load before route uncomment to use token authentication
 // apiRoutes.use(middleware.verifyToken)
+
+
+//ROUTE LAVORI COMPLETA E FUNIONANTE
 
 
 //instantiate template engine
