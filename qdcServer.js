@@ -13,35 +13,36 @@
 //library
 var _ = require("underscore")
 var express = require('express');
-//lets require/import the mongodb native drivers.
-//var mongodb = require('mongodb');
-//
-//read and write file
 var jsonfile = require('jsonfile')
 var util = require('util')
 var fs = require('fs')
 var CronJob = require('cron').CronJob;
-
-var config = require('./config');
-
+var uuid = require('uuid');
+var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
-
 var mongoose = require('mongoose');
 
+
+//call schema from mongoose
 var Schema = mongoose.Schema;
     ObjectId = Schema.ObjectId;
 
+//configFile
+var config = require('./config');
+
+//connect to database
+mongoose.connect(config.database);
 
 
 //init app
 var app = express();
 
+//init api/route protected by middleware
 var apiRoutes = express.Router();
 
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
 
-var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true,
@@ -53,103 +54,39 @@ apiRoutes.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     limit: '50mb'
 }));
 
-
-mongoose.connect(config.database);
-
+//set secret Variable
 app.set('superSecret', config.secret);
 
 //MODEL
-
+//istantiate all model
 var User = require('./model/user');
 var Coltura = require('./model/colture');
+var Lavoro = require('./model/lavori');
+var Prodotto = require('./model/prodotti');
+var Terreno = require('./model/terreni');
+var Trattamento = require('./model/trattamenti');
+var TrattamentoProdotto = require('./model/trattamentoProdotti');
+var Unita = require('./model/unita');
 
+
+//istantiate middleware defined in other file
+var middleware = require('./middleware/middleware')
+
+//set middleware for verify token remind to load before route
+apiRoutes.use(middleware.verifyToken)
+
+//instantiate route defined in other file
 require('./route/routeColtura')(apiRoutes,app);
 require('./route/routeUser')(apiRoutes,app);
 
-var middleware = require('./middleware/middleware')
-
-apiRoutes.use(middleware.verifyToken)
-
-
-var lavoriSchema = new Schema({
-    name: { type: String, required: true},
-    description: { type: String, required: true},
-    user:{ type: ObjectId, ref:'userSchema'},
-    created_at: Date,
-    updated_at: Date
-});
-
-var prodottiSchema = new Schema({
-    name: { type: String, required: true},
-    description: { type: String, required: true},
-    user:{ type: ObjectId, ref:'userSchema'},
-    created_at: Date,
-    updated_at: Date
-});
-
-var terreniSchema = new Schema({
-    name: { type: String, required: true},
-    description: { type: String, required: true},
-    user:{ type: ObjectId, ref:'userSchema'},
-    created_at: Date,
-    updated_at: Date
-});
-
-var unitaSchema = new Schema({
-    name: { type: String, required: true},
-    description: { type: String, required: true},
-    factor:Number,
-    created_at: Date,
-    updated_at: Date
-});
-
-var trattamentiSchema = new Schema({
-    name: { type: String, required: true},
-    description: { type: String, required: true},
-    user:{ type: ObjectId, ref:'userSchema'},
-    coltura:{ type: ObjectId, ref:'coltureSchema'},
-    terreno:{ type: ObjectId, ref:'terreniSchema'},
-    lavoro:{ type: ObjectId, ref:'lavoriSchema'},
-    time: Number,
-    date: Date,
-    created_at: Date,
-    updated_at: Date
-});
-
-var trattamentiProdottiSchema = new Schema({
-    name: { type: String, required: true},
-    description: { type: String, required: true},
-    prodotto:{ type: ObjectId, ref:'prodottiSchema'},
-    user:{ type: ObjectId, ref:'userSchema'},
-    quantita: Number,
-    trattamento: { type: ObjectId, ref:'trattamentiSchema'},
-    time: Number,
-    date: Date,
-    unita: { type: ObjectId, ref:'unitaSchema'},
-    created_at: Date,
-    updated_at: Date
-});
-
-// the schema is useless so far
-// we need to create a model using it
-// var User = mongoose.model('User', userSchema);
-
-// make this available to our users in our Node applications
-// module.exports = User;
-
-//END MODEL
-
-
-
-app.set('view engine', 'ejs');
-
-var uuid = require('uuid');
+//instantiate template engine
+// app.set('view engine', 'ejs');
 
 app.use('/bower_components', express.static('bower_components'));
 
 app.use('/js', express.static('js'));
 
-// Add headers
+// Add headers to enable all request
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
@@ -175,11 +112,6 @@ app.use(function (req, res, next) {
 
 
 
-
-
-
-
-//end Authenticated routs
 
 app.listen(8082, function () {
     console.log('listening on port 8082!');
