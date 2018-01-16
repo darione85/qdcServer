@@ -43,17 +43,19 @@ var apiRoutes = express.Router();
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
 
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-    extended: true,
-    limit: '50mb'
-}));
-
+// app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+//     extended: true,
+//     limit: '50mb'
+// }));
+//
 // apiRoutes.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 //     extended: true,
 //     limit: '50mb'
 // }));
 
-apiRoutes.use(bodyParser.json());
+// apiRoutes.use(bodyParser.json());
+
+app.use(bodyParser.json());
 
 //set secret Variable
 app.set('superSecret', config.secret);
@@ -106,7 +108,8 @@ app.use(function (req, res, next) {
 
     res.setHeader("Access-Control-Max-Age", '86400'); // 24 hours
 
-    res.setHeader('content-type', 'application/json')
+    // res.setHeader('content-type', 'application/json')
+    res.setHeader('Content-Type', 'application/json')
 
     // Pass to next layer of middleware
     next();
@@ -145,9 +148,12 @@ app.post('/login',function (req, res) {
 
 app.post('/authenticate', function(req, res) {
 
+    var username = req.query.username || req.body.username
+    var password = req.query.password || req.body.password
+
     // find the user
     User.findOne({
-        username: req.query.username
+        username: username
     }, function(err, user) {
 
         if (err) throw err;
@@ -157,7 +163,7 @@ app.post('/authenticate', function(req, res) {
         } else if (user) {
 
             // check if password matches
-            if (user.password != req.query.password) {
+            if (user.password != password) {
                 res.json({ success: false, message: 'Authentication failed. Wrong password.' });
             } else {
 
@@ -177,6 +183,7 @@ app.post('/authenticate', function(req, res) {
                 res.json({
                     success: true,
                     message: 'Enjoy your token!',
+                    user:user,
                     token: token
                 });
             }

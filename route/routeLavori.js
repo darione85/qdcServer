@@ -8,12 +8,12 @@ module.exports = function(apiRoutes, app){
     var Lavoro = require('.././model/lavori');
 
     //get lavori by username
-    apiRoutes.get('/lavori/:username', function (req, res) {
-        var username = req.params.username
+    apiRoutes.get('/lavori/:usernameId', function (req, res) {
+        var username = req.params.usernameId
 
         if (username){
             User.findOne({
-                username: username
+                _id: username
             }, function(err, user) {
 
                 if (err) throw err;

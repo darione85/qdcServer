@@ -11,6 +11,8 @@ var userSchema = new Schema({
     token : {type: String},
     admin: Boolean,
     location: String,
+    application: Schema.Types.Mixed,//oggetto 
+    role:Schema.Types.Mixed,//oggetto
     meta: {
         age: Number,
         website: String
